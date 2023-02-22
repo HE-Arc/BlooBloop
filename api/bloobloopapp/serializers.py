@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from .models import MessageItem
 
 
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ["url", "id", "username"]
+
+
 class MessageItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MessageItem
