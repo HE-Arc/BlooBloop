@@ -4,21 +4,6 @@ from .models import ConversationItem, MessageItem, ProfileItem
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                    CONVERSATION Serializer                    #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-
-class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ConversationItem
-        fields = [
-            "url",
-            "id",
-            "name",
-        ]
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                        USER Serializer                        #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -43,6 +28,25 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "id",
             "user",
+            "conversations",
+        ]
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                    CONVERSATION Serializer                    #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
+    users = ProfileItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ConversationItem
+        fields = [
+            "url",
+            "id",
+            "name",
+            "users",
         ]
 
 
