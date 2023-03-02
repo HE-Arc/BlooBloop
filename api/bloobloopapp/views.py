@@ -1,20 +1,23 @@
 from django.contrib.auth.models import User
-from rest_framework import generics
-from .serializers import UserSerializer
 
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-
-from .models import MessageItem
-from .serializers import MessageItemSerializer
-from rest_framework import mixins
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
-# Create your views here.
+from .models import ConversationItem, MessageItem, ProfileItem
+from .serializers import (
+    ConversationItemSerializer,
+    MessageItemSerializer,
+    ProfileItemSerializer,
+)
+
+
+class ConversationItemViewSet(viewsets.ModelViewSet):
+    queryset = ConversationItem.objects.all()
+    serializer_class = ConversationItemSerializer
+
+
 class MessageItemViewSet(viewsets.ModelViewSet):
     queryset = MessageItem.objects.all()
     serializer_class = MessageItemSerializer
@@ -29,3 +32,8 @@ class MessageItemViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfileItemViewSet(viewsets.ModelViewSet):
+    queryset = ProfileItem.objects.all()
+    serializer_class = ProfileItemSerializer

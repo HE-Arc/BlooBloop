@@ -4,7 +4,13 @@ from django.contrib.auth.models import User
 
 class ConversationItem(models.Model):
     name = models.CharField(max_length=50)
-    # users = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class ProfileItem(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    conversations = models.ManyToManyField(ConversationItem, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

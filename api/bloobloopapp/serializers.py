@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import ConversationItem, MessageItem
+from .models import ConversationItem, MessageItem, ProfileItem
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -27,9 +27,22 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+        ]
+
+
+class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer(required=True)
+
+    class Meta:
+        model = ProfileItem
+        fields = [
             "url",
             "id",
-            "username",
+            "user",
         ]
 
 

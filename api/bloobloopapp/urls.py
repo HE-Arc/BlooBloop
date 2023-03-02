@@ -4,12 +4,13 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
+router.register(
+    "conversation-items", views.ConversationItemViewSet, basename="conversationitem"
+)
+
+router.register("message-items", views.MessageItemViewSet, basename="messageitem")
+router.register("profile-items", views.ProfileItemViewSet, basename="profileitem")
+
 urlpatterns = [
-    # path("users/", views.UserList.as_view(), name="user-list"),
-    # path(
-    #     "users/<int:pk>/",
-    #     views.UserDetail.as_view(),
-    #     name="user-detail",
-    # ),
     path("", include(router.urls)),
 ]
