@@ -14,7 +14,7 @@ const submit = async () => {
     success.value = false;
     errors.value = null;
 
-    await axios.post("http://127.0.0.1:8000/api/users/", {
+    await axios.post("http://127.0.0.1:8000/api/profile-items/", {
       username: username.value,
       email: email.value,
       password: password.value,
