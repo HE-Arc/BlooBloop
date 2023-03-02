@@ -9,7 +9,7 @@ class ProfileItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.user.get_username()
+        return f"{self.user.username} | {self.user.email}"
 
 
 class ConversationItem(models.Model):
@@ -21,7 +21,7 @@ class ConversationItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name}: {self.users.count()} members"
 
 
 class MessageItem(models.Model):
@@ -31,6 +31,12 @@ class MessageItem(models.Model):
     # conversation = models.ForeignKey(
     #     ConversationItem, related_name="message_items", on_delete=models.CASCADE
     # )
+    profile = models.ForeignKey(
+        ProfileItem, on_delete=models.SET_NULL, related_name="message_items", null=True
+    )
     content = models.CharField(max_length=2048)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.profile.user.username}: {self.content}"

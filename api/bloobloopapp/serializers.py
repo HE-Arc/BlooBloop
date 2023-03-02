@@ -21,6 +21,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(required=True)
+    message_items = serializers.HyperlinkedRelatedField(
+        many=True, view_name="messageitem-detail", read_only=True
+    )
 
     class Meta:
         model = ProfileItem
@@ -29,6 +32,7 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "user",
             "conversations",
+            "message_items",
         ]
 
 
@@ -56,10 +60,13 @@ class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MessageItemSerializer(serializers.HyperlinkedModelSerializer):
+    profile = ProfileItemSerializer(read_only=True)
+
     class Meta:
         model = MessageItem
         fields = [
             "url",
             "id",
             "content",
+            "profile",
         ]
