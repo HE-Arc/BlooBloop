@@ -32,7 +32,10 @@ class MessageItem(models.Model):
     #     ConversationItem, related_name="message_items", on_delete=models.CASCADE
     # )
     profile = models.ForeignKey(
-        ProfileItem, on_delete=models.SET_NULL, related_name="message_items", null=True
+        ProfileItem, on_delete=models.SET_NULL, related_name="messages", null=True
+    )
+    conversation = models.ForeignKey(
+        ConversationItem, on_delete=models.CASCADE, related_name="messages"
     )
     content = models.CharField(max_length=2048)
     created_at = models.DateTimeField(auto_now_add=True)

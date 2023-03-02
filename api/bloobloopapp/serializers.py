@@ -21,7 +21,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(required=True)
-    message_items = serializers.HyperlinkedRelatedField(
+    messages = serializers.HyperlinkedRelatedField(
         many=True, view_name="messageitem-detail", read_only=True
     )
 
@@ -32,7 +32,7 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "user",
             "conversations",
-            "message_items",
+            "messages",
         ]
 
 
@@ -43,6 +43,9 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
 
 class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
     users = ProfileItemSerializer(many=True, read_only=True)
+    messages = serializers.HyperlinkedRelatedField(
+        many=True, view_name="messageitem-detail", read_only=True
+    )
 
     class Meta:
         model = ConversationItem
@@ -51,6 +54,7 @@ class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "name",
             "users",
+            "messages",
         ]
 
 
@@ -61,6 +65,7 @@ class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
 
 class MessageItemSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileItemSerializer(read_only=True)
+    conversation = ConversationItemSerializer(read_only=True)
 
     class Meta:
         model = MessageItem
@@ -69,4 +74,5 @@ class MessageItemSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "content",
             "profile",
+            "conversation",
         ]
