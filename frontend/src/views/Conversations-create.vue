@@ -12,7 +12,7 @@ const submit = async () => {
       name: name.value,
     });
     success.value = true;
-    window.location.href = "http://127.0.0.1:5173/conversations";
+    window.location.href = "http://localhost:5173/conversations";
   } catch (error) {
     errors.value = error.response.data;
   }
