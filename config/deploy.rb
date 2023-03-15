@@ -37,3 +37,28 @@ set :repo_url, "https://github.com/HE-Arc/BlooBloop.git"
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+append :linked_files, '.env'
+
+after 'deploy:updating', 'pip:install'
+
+namespace :pip do
+
+    desc 'Install'
+    task :install do
+        on roles([:app, :web]) do |h|
+            execute "pip install -r #{release_path}/requirements.txt"
+        end
+    end
+end
+
+after 'deploy:publishing', 'gunicorn:restart'
+
+namespace :gunicorn do
+    desc 'Restart application'
+    task :restart do
+        on roles(:web) do |h|
+            execute :sudo, 'systemctl restart gunicorn'
+        end
+    end
+end

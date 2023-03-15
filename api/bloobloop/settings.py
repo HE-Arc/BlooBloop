@@ -12,8 +12,17 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+import environ
+import os
+
+env = environ.Env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Set the project base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR.parent, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,10 +32,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-v5la0j(qt2_ab4)+nquraj-_5=vyth*q$s*0#$rs520by7&yxv"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = env("ALLOWED_HOST").split(", ")
 
 # Application definition
 
@@ -53,7 +61,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(", ")
 ROOT_URLCONF = "bloobloop.urls"
 
 TEMPLATES = [
@@ -80,8 +88,12 @@ WSGI_APPLICATION = "bloobloop.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": env("DATABASE_ENGINE"),
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USER"),
+        "PASSWORD": env("DATABASE_PASSWORD"),
+        "HOST": env("DATABASE_HOST"),
+        "PORT": env("DATABASE_PORT"),
     }
 }
 
