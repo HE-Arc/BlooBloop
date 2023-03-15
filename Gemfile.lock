@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/capistrano-plugins/capistrano-ssh-doctor.git
+  revision: 0e5de7c1c4d987c16adeaea296f0e863b9cbec6f
+  specs:
+    capistrano-ssh-doctor (1.0.0)
+      capistrano (>= 3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -25,6 +32,7 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano
+  capistrano-ssh-doctor!
   dotenv
 
 BUNDLED WITH

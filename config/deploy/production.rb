@@ -8,6 +8,7 @@ server ENV['DEPLOY_HOST'], user: ENV['DEPLOY_USERNAME'], roles: %w{app db web}, 
 # server "db.example.com", user: "deploy", roles: %w{db}
 
 
+set :repo_tree, "api/"
 set :deploy_to, "/home/django/project/BlooBloop/api/"
 set :branch, "main"
 
@@ -45,9 +46,7 @@ set :branch, "main"
 # Global options
 # --------------
 #  set :ssh_options, {
-#    keys: %w(/home/user_name/.ssh/id_rsa),
-#    forward_agent: false,
-#    auth_methods: %w(password)
+#     :verbose => Logger::DEBUG
 #  }
 #
 # The server-based syntax can be used to override options:

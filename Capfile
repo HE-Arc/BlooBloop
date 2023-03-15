@@ -15,6 +15,8 @@ require "capistrano/deploy"
 require "capistrano/scm/git"
 install_plugin Capistrano::SCM::Git
 
+require "capistrano/ssh_doctor"
+
 require 'dotenv/load'
 
 # Include tasks from other gems included in your Gemfile
