@@ -23,12 +23,14 @@ const errors = ref(null);
 </script>
 
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
-    <q-form @submit="submit" class="q-gutter-md">
-      <q-input filled v-model="name" label="Conversation name *" />
-      <div>
-        <q-btn label="Submit" type="submit" color="primary" />
-      </div>
-    </q-form>
-  </div>
+  <main>
+    <div class="q-pa-md" style="max-width: 400px">
+      <q-form @submit="submit" class="q-gutter-md">
+        <q-input filled v-model="name" label="Conversation name *" />
+        <div>
+          <q-btn label="Submit" type="submit" color="primary" />
+        </div>
+      </q-form>
+    </div>
+  </main>
 </template>

@@ -1,9 +1,7 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
-
 <template>
   <main>
-    <TheWelcome />
+    <div class="text-center">
+      <h3>Ici, pas de <b>bla bla</b> que du <b>bloo bloop !</b></h3>
+    </div>
   </main>
 </template>

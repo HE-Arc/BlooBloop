@@ -10,7 +10,8 @@ import "@quasar/extras/mdi-v6/mdi-v6.css";
 // Import Quasar css
 import "quasar/dist/quasar.css";
 
-import "./assets/main.css";
+// Don't import main.css because of the multiple useless configurations
+//import "./assets/main.css";
 
 const app = createApp(App);
 

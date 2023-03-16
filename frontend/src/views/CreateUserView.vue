@@ -36,48 +36,50 @@ const submit = async () => {
 <template>
   {{ errors }}
 
-  <div class="q-pa-md" style="max-width: 50%">
-    <q-form @submit="submit" class="q-gutter-md">
-      <q-input
-        square
-        filled
-        v-model="username"
-        label="Username"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Username is missing']"
-      />
+  <main>
+    <div class="q-mx-auto q-mt-xl" style="max-width: 50%">
+      <q-form @submit="submit" class="q-gutter-md">
+        <q-input
+          square
+          filled
+          v-model="username"
+          label="Username"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Username is missing']"
+        />
 
-      <q-input
-        square
-        filled
-        type="email"
-        v-model="email"
-        label="Email"
-        :rules="[(val) => !!val || 'Email is missing', isValidEmail]"
-      />
+        <q-input
+          square
+          filled
+          type="email"
+          v-model="email"
+          label="Email"
+          :rules="[(val) => !!val || 'Email is missing', isValidEmail]"
+        />
 
-      <q-input
-        v-model="password"
-        square
-        filled
-        label="Password"
-        :type="isPwd ? 'password' : 'text'"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Password is missing']"
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            @click="isPwd = !isPwd"
-          />
-        </template>
-      </q-input>
+        <q-input
+          v-model="password"
+          square
+          filled
+          label="Password"
+          :type="isPwd ? 'password' : 'text'"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Password is missing']"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
 
-      <div class="row q-mt-lg justify-around">
-        <q-btn label="Sign up" type="submit" color="primary" />
-        <a href="/users/login">Log in</a>
-      </div>
-    </q-form>
-  </div>
+        <div class="row q-mt-lg justify-around items-center">
+          <q-btn label="Sign up" type="submit" color="primary" />
+          <a href="/users/login">Log in</a>
+        </div>
+      </q-form>
+    </div>
+  </main>
 </template>
