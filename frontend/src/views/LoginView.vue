@@ -31,17 +31,19 @@ const submit = async () => {
         square
         filled
         v-model="username"
-        label="username"
+        label="Username"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        :rules="[(val) => (val && val.length > 0) || 'Username is missing']"
       />
 
       <q-input
         v-model="password"
         square
         filled
-        label="password"
+        label="Password"
         :type="isPwd ? 'password' : 'text'"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Password is missing']"
       >
         <template v-slot:append>
           <q-icon
