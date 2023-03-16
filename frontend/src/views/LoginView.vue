@@ -27,6 +27,7 @@ const submit = async () => {
 
   <main>
     <div class="q-mx-auto q-mt-xl" style="max-width: 50%">
+      <h3>Login</h3>
       <q-form @submit="submit" class="q-gutter-md">
         <q-input
           square

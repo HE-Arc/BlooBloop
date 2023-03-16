@@ -24,11 +24,18 @@ const errors = ref(null);
 
 <template>
   <main>
-    <div class="q-pa-md" style="max-width: 400px">
+    <div class="q-mx-auto" style="max-width: 50%">
+      <h3>New Conversation</h3>
       <q-form @submit="submit" class="q-gutter-md">
-        <q-input filled v-model="name" label="Conversation name *" />
-        <div>
-          <q-btn label="Submit" type="submit" color="primary" />
+        <q-input
+          filled
+          v-model="name"
+          label="Conversation name"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Name is missing']"
+        />
+        <div class="row justify-center">
+          <q-btn label="Create" type="submit" color="primary" />
         </div>
       </q-form>
     </div>

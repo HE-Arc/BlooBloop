@@ -14,6 +14,12 @@ const submitMessage = async () => {
   // Intentionally empty (for now)
 };
 
+const remove = async (index) => {
+  await axios.delete(`http://127.0.0.1:8000/api/conversation-items/${index}/`);
+
+  await fetchConversationItems();
+};
+
 onMounted(() => {
   fetchConversationItems();
 });
@@ -21,10 +27,11 @@ onMounted(() => {
 
 <template>
   <main>
-    <div>
-      <q-splitter v-model="splitterModel" style="height: 30em">
+    <div class="q-ma-lg">
+      <h3 class="text-center">Conversations</h3>
+      <q-splitter v-model="splitterModel">
         <template v-slot:before>
-          <q-tabs v-model="tab" vertical class="text-teal">
+          <q-tabs v-model="tab" vertical class="text-primary">
             <q-tab
               v-for="(item, index) in conversationItems"
               :key="index"
@@ -59,19 +66,22 @@ onMounted(() => {
                   label="Enter message.. (not functional)"
                 />
                 <div>
-                  <q-btn label="Submit" type="submit" color="primary" />
+                  <q-btn label="Send" type="submit" color="primary" />
                 </div>
               </q-form>
+              <div class="q-mt-md row justify-end">
+                <q-btn color="negative" @click="remove(item.id)">Delete</q-btn>
+                <q-btn class="q-ml-md" color="warning">Update</q-btn>
+              </div>
             </q-tab-panel>
           </q-tab-panels>
         </template>
       </q-splitter>
     </div>
 
-    <div class="text-left q-my-md">
-      <q-btn color="primary" :to="{ name: 'conversations.create' }">
-        <q-icon left size="xl" name="mdi-plus-box" />
-        <div>Ajouter</div>
+    <div class="row justify-center q-mt-lg">
+      <q-btn round color="primary" :to="{ name: 'conversations.create' }">
+        <q-icon size="sm" name="mdi-plus-box" />
       </q-btn>
     </div>
   </main>
