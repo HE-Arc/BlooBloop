@@ -4,6 +4,7 @@ import { ref } from "vue";
 
 const username = ref("");
 const password = ref("");
+const isPwd = ref(true);
 
 const errors = ref(null);
 
@@ -24,15 +25,37 @@ const submit = async () => {
 <template>
   {{ errors }}
 
-  <form @submit.prevent="submit">
-    <div class="form-control">
-      <label for="username">Username </label>
-      <input type="text" v-model="username" required />
-    </div>
-    <div class="form-control">
-      <label for="password">Password </label>
-      <input type="password" v-model="password" required />
-    </div>
-    <button type="submit">Login</button>
-  </form>
+  <div class="q-pa-md" style="max-width: 50%">
+    <q-form @submit="submit" class="q-gutter-md">
+      <q-input
+        square
+        filled
+        v-model="username"
+        label="username"
+        lazy-rules
+        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+      />
+
+      <q-input
+        v-model="password"
+        square
+        filled
+        label="password"
+        :type="isPwd ? 'password' : 'text'"
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
+
+      <div class="row q-mt-lg justify-around">
+        <q-btn label="Login" type="submit" color="primary" />
+        <a href="/users/create">Sign up</a>
+      </div>
+    </q-form>
+  </div>
 </template>
