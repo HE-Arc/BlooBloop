@@ -21,6 +21,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(required=True)
+    conversations = serializers.HyperlinkedRelatedField(
+        many=True, view_name="conversationitem-detail", read_only=True
+    )
     messages = serializers.HyperlinkedRelatedField(
         many=True, view_name="messageitem-detail", read_only=True
     )
@@ -34,6 +37,12 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
             "conversations",
             "messages",
         ]
+
+    def create(self, validated_data):
+        user_data = validated_data.pop("user")
+        user = User.objects.create(**user_data)
+        profile = ProfileItem.objects.create(user=user, **validated_data)
+        return profile
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

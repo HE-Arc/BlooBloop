@@ -2,6 +2,8 @@
 import axios from "axios";
 import { ref } from "vue";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const username = ref("");
 const email = ref("");
 const password = ref("");
@@ -21,10 +23,12 @@ const submit = async () => {
     success.value = false;
     errors.value = null;
 
-    await axios.post("http://127.0.0.1:8000/api/profile-items/", {
-      username: username.value,
-      email: email.value,
-      password: password.value,
+    await axios.post(API_URL + "profile-items/", {
+      user: {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+      },
     });
     success.value = true;
   } catch (error) {

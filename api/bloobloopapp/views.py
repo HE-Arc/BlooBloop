@@ -10,6 +10,7 @@ from .serializers import (
     ConversationItemSerializer,
     MessageItemSerializer,
     ProfileItemSerializer,
+    UserSerializer,
 )
 
 
@@ -37,3 +38,8 @@ class MessageItemViewSet(viewsets.ModelViewSet):
 class ProfileItemViewSet(viewsets.ModelViewSet):
     queryset = ProfileItem.objects.all()
     serializer_class = ProfileItemSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = ProfileItem.objects.all()
+    serializer_class = UserSerializer
