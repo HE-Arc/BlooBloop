@@ -5,6 +5,9 @@ gem "capistrano-multiconfig"
 
 gem "dotenv"
 
+gem 'ed25519'
+gem 'bcrypt_pbkdf'
+
 # gem "capistrano-bundler",  ">=1.0.0"
 # gem "capistrano-rbenv",    ">=1.0.5"
 # gem "capistrano-rails",    ">=1.0.0"
