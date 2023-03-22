@@ -1,64 +1,29 @@
-# config valid for current version and patch releases of Capistrano
-lock "~> 3.17.2"
+#
+# Put here shared configuration shared among all children
+#
+# Read more about configurations:
+# https://github.com/railsware/capistrano-multiconfig/blob/master/README.md
 
-set :application, "BlooBloop"
-set :repo_url, "https://github.com/HE-Arc/BlooBloop.git"
+ask :branch, 'master'
 
-# Default branch is :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :application, proc { fetch(:stage).split(':').reverse[1] }
 
-# Default deploy_to directory is /var/www/my_app_name
-# set :deploy_to, "/var/www/my_app_name"
+set :repo_url, proc { "git@github.com:me/#{fetch(:application)}.git" }
 
-# Default value for :format is :airbrussh.
-# set :format, :airbrussh
+set :deploy_to, proc { "/var/www/#{fetch(:application)}" }
 
-# You can configure the Airbrussh format using :format_options.
-# These are the defaults.
-# set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto
+set :scm, :git
 
-# Default value for :pty is false
-# set :pty, true
+set :format, :pretty
 
-# Default value for :linked_files is []
-# append :linked_files, "config/database.yml", 'config/master.key'
+set :log_level, :debug
 
-# Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "tmp/webpacker", "public/system", "vendor", "storage"
+set :pty, true
 
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :linked_files, %w{config/database.yml}
 
-# Default value for local_user is ENV['USER']
-# set :local_user, -> { `git config user.name`.chomp }
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-# Default value for keep_releases is 5
-# set :keep_releases, 5
+set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
-# Uncomment the following to require manually verifying the host key before first deploy.
-# set :ssh_options, verify_host_key: :secure
-
-append :linked_files, '.env'
-
-after 'deploy:updating', 'pip:install'
-
-namespace :pip do
-
-    desc 'Install'
-    task :install do
-        on roles([:app, :web]) do |h|
-            execute "pip install -r #{release_path}/requirements.txt"
-        end
-    end
-end
-
-after 'deploy:publishing', 'gunicorn:restart'
-
-namespace :gunicorn do
-    desc 'Restart application'
-    task :restart do
-        on roles(:web) do |h|
-            execute :sudo, 'systemctl restart gunicorn'
-        end
-    end
-end
+set :keep_releases, 5
