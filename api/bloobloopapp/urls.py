@@ -10,7 +10,6 @@ router.register(
 
 router.register("message-items", views.MessageItemViewSet, basename="messageitem")
 router.register("profile-items", views.ProfileItemViewSet, basename="profileitem")
-router.register("users", views.UserViewSet, basename="user")
 
 urlpatterns = [
     path("", include(router.urls)),
