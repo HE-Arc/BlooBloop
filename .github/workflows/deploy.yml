@@ -30,4 +30,4 @@ jobs:
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          bundle exec cap apps:api:production deploy
+          bundle exec cap all:production deploy
