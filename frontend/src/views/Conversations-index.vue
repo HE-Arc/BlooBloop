@@ -2,12 +2,14 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const tab = ref("");
 const splitterModel = ref(20);
 const conversationItems = ref([]);
 
 const fetchConversationItems = async () => {
-  const res = await axios.get("http://127.0.0.1:8000/api/conversation-items/");
+  const res = await axios.get(API_URL + "conversation-items");
   conversationItems.value = res.data;
 };
 const submitMessage = async () => {
@@ -15,7 +17,7 @@ const submitMessage = async () => {
 };
 
 const remove = async (index) => {
-  await axios.delete(`http://127.0.0.1:8000/api/conversation-items/${index}/`);
+  await axios.delete(API_URL + `conversation-items/${index}`);
 
   await fetchConversationItems();
 };

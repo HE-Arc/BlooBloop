@@ -2,17 +2,20 @@
 import axios from "axios";
 import { ref } from "vue";
 
+const API_URL = import.meta.env.VITE_API_URL;
+const APP_URL = import.meta.env.BASE_URL;
+
 const name = ref("");
 
 const submit = async () => {
   try {
     errors.value = null;
     success.value = false;
-    await axios.post("http://localhost:8000/api/conversation-items/", {
+    await axios.post(API_URL + "conversation-items/", {
       name: name.value,
     });
     success.value = true;
-    window.location.href = "http://localhost:5173/conversations";
+    window.location.href = APP_URL + "conversations/";
   } catch (error) {
     errors.value = error.response.data;
   }
