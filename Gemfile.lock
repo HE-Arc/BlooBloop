@@ -26,8 +26,8 @@ PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
-  capistrano (>= 3.0.0)
-  capistrano-multiconfig (>= 3.0.3)
+  capistrano
+  capistrano-multiconfig
   dotenv
 
 BUNDLED WITH

@@ -1,8 +1,7 @@
 source "https://rubygems.org"
 
-gem "capistrano", ">=3.0.0"
-
-gem "capistrano-multiconfig", ">=3.0.3"
+gem "capistrano"
+gem "capistrano-multiconfig"
 
 gem "dotenv"
 

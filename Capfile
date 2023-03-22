@@ -4,6 +4,18 @@ require 'capistrano/multiconfig'
 
 # Includes default deployment tasks
 require 'capistrano/deploy'
+
+# Load the SCM plugin appropriate to your project:
+#
+# require "capistrano/scm/hg"
+# install_plugin Capistrano::SCM::Hg
+# or
+# require "capistrano/scm/svn"
+# install_plugin Capistrano::SCM::Svn
+# or
+require "capistrano/scm/git"
+install_plugin Capistrano::SCM::Git
+
 require 'dotenv/load'
 
 # Includes tasks from other gems included in your Gemfile
@@ -31,6 +43,9 @@ require 'dotenv/load'
 # require 'capistrano/calendar'
 
 # Loads custom tasks
-Dir.glob('tasks/*.cap').each { |r| import r }
+# Dir.glob('tasks/*.cap').each { |r| import r }
+
+# Load custom tasks from lib/capistrano/tasks if you have any defined
+Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
 
 # vim syntax=ruby
