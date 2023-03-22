@@ -1,5 +1,6 @@
 # Load DSL and Setup multiple configurations
 # https://github.com/railsware/capistrano-multiconfig
+require 'capistrano/setup'
 require 'capistrano/multiconfig'
 
 # Includes default deployment tasks
