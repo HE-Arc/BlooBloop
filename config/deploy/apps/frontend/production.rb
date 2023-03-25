@@ -2,7 +2,7 @@ server ENV['DEPLOY_HOST'], user: ENV['DEPLOY_USERNAME'], roles: %w{app db web}, 
 
 set :repo_tree, "frontend/"
 set :deploy_to, "/home/django/project/BlooBloop/frontend/"
-set :branch, "deployment"
+set :branch, "main"
 
 after 'deploy:updating', 'npm:build'
 

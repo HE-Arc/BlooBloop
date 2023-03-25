@@ -2,7 +2,7 @@ server ENV['DEPLOY_HOST'], user: ENV['DEPLOY_USERNAME'], roles: %w{app db web}, 
 
 set :repo_tree, "api/"
 set :deploy_to, "/home/django/project/BlooBloop/api/"
-set :branch, "deployment"
+set :branch, "main"
 
 after 'deploy:updating', 'pip:install'
 
