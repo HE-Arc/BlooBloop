@@ -4,8 +4,6 @@ set :repo_tree, "frontend/"
 set :deploy_to, "/home/django/project/BlooBloop/frontend/"
 set :branch, "deployment"
 
-append :linked_files, '.env'
-
 after 'deploy:updating', 'npm:build'
 
 namespace :npm do

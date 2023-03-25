@@ -31,3 +31,4 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
           bundle exec cap apps:api:production deploy
+          bundle exec cap apps:frontend:production deploy
