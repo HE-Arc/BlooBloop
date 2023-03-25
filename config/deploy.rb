@@ -9,5 +9,3 @@ lock "~> 3.17.2"
 
 set :application, "BlooBloop"
 set :repo_url, "https://github.com/HE-Arc/BlooBloop.git"
-
-append :linked_files, '.env'

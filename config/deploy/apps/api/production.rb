@@ -4,6 +4,8 @@ set :repo_tree, "api/"
 set :deploy_to, "/home/django/project/BlooBloop/api/"
 set :branch, "deployment"
 
+append :linked_files, '.env'
+
 after 'deploy:updating', 'pip:install'
 
 namespace :pip do
