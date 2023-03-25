@@ -28,7 +28,7 @@ jobs:
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
         run: |
           bundle exec cap apps:api:production deploy
           bundle exec cap apps:frontend:production deploy
