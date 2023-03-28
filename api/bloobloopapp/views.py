@@ -38,3 +38,13 @@ class MessageItemViewSet(viewsets.ModelViewSet):
 class ProfileItemViewSet(viewsets.ModelViewSet):
     queryset = ProfileItem.objects.all()
     serializer_class = ProfileItemSerializer
+
+    @action(detail=True, methods=["POST"], url_path="profile-items/login")
+    def login(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        recent_messages = MessageItem.objects.filter(user=user).order_by("created_at")
+        serializer = self.get_serializer(recent_messages)
+        if serializer.is_valid():
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
