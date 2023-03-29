@@ -1,22 +1,17 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import ConversationItem, MessageItem, ProfileItem
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                        USER Serializer                        #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = [
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "password"
-        ]
+        fields = ["username", "first_name", "last_name", "email", "password"]
+
 
 class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(required=True)
@@ -43,9 +38,11 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
         profile = ProfileItem.objects.create(user=user, **validated_data)
         return profile
 
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                    CONVERSATION Serializer                    #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 
 class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
     users = ProfileItemSerializer(many=True, read_only=True)
@@ -67,6 +64,7 @@ class ConversationItemSerializer(serializers.HyperlinkedModelSerializer):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                       MESSAGE Serializer                      #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 
 class MessageItemSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileItemSerializer(read_only=True)
