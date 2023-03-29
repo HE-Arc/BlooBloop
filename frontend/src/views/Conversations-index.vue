@@ -9,7 +9,7 @@ const splitterModel = ref(20);
 const conversationItems = ref([]);
 
 const fetchConversationItems = async () => {
-  const res = await axios.get(API_URL + "conversation-items");
+  const res = await axios.get(API_URL + "conversation-items/");
   conversationItems.value = res.data;
 };
 const submitMessage = async () => {
@@ -17,7 +17,7 @@ const submitMessage = async () => {
 };
 
 const remove = async (index) => {
-  await axios.delete(API_URL + `conversation-items/${index}`);
+  await axios.delete(API_URL + `conversation-items/${index}/`);
 
   await fetchConversationItems();
 };

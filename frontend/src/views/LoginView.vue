@@ -16,26 +16,25 @@ const submit = async () => {
   try {
     errors.value = null;
 
-    await axios
-      .post(
-        API_URL + "profile-items/login/",
-        {
-          username: username.value,
-          password: password.value,
+    await axios.post(
+      API_URL + "profile-items/login/",
+      {
+        username: username.value,
+        password: password.value,
+      },
+      {
+        headers: {
+          //"x-csrftoken": this.readCookie("csrftoken"),
+          accept: "application/json",
+          "content-type": "application/json",
         },
-        {
-          headers: {
-            //"x-csrftoken": this.readCookie("csrftoken"),
-            accept: "application/json",
-            "content-type": "application/json",
-          },
-          withCredentials: true,
-        }
-      )
-      .then((response) => {
-        localStorage.setItem("access_token", response.data.access);
-        router.push({ path: "/" });
-      });
+        withCredentials: true,
+      }
+    );
+    router.push({
+      path: "/",
+      params: { alert: "Logged in as " + username.value },
+    });
   } catch (error) {
     errors.value = error.response.data;
   }

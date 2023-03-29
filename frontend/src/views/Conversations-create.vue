@@ -1,27 +1,29 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const APP_URL = import.meta.env.BASE_URL;
+const router = useRouter();
 
 const name = ref("");
 
 const submit = async () => {
   try {
     errors.value = null;
-    success.value = false;
     await axios.post(API_URL + "conversation-items/", {
       name: name.value,
     });
-    success.value = true;
-    window.location.href = APP_URL + "conversations/";
+
+    router.push({
+      path: "/conversations",
+    });
   } catch (error) {
     errors.value = error.response.data;
   }
 };
 
-const success = ref(false);
 const errors = ref(null);
 </script>
 

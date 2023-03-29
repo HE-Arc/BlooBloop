@@ -1,7 +1,25 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const alert = ref("");
+
+// TODO: Find out how to pass parameters between the routes
+onMounted(() => {
+  if (router.params) {
+    alert.value = router.params.alert;
+  }
+});
+</script>
+
 <template>
   <main>
+    <p>{{ alert }}</p>
     <div class="text-center">
-      <h3>Ici, pas de <b>bla bla</b> que du <b>bloo bloop ! Deployment 2</b></h3>
+      <h3>
+        Ici, pas de <b>bla bla</b> que du <b>bloo bloop ! Deployment 2</b>
+      </h3>
     </div>
   </main>
 </template>
