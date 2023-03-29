@@ -78,6 +78,13 @@ class ProfileItemViewSet(viewsets.ModelViewSet):
             {"error": "Invalid username and/or password."},
             status=status.HTTP_400_BAD_REQUEST,
         )
+        
+    @action(detail=False, methods=["get"], url_path="authenticated")
+    def isAuthentificated(self, request):
+        if request.user.is_authenticated:
+            return Response(True)
+        else:
+            return Response(False)
 
     @action(detail=False, methods=["get"])
     def logout(self, request):

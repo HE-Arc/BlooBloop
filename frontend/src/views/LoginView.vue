@@ -69,7 +69,9 @@ const submit = async () => {
           label="Password"
           :type="isPwd ? 'password' : 'text'"
           lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Password is missing']"
+          :rules="[
+            (val) => (val && val.length >= 8) || 'Password is too short',
+          ]"
         >
           <template v-slot:append>
             <q-icon
@@ -82,7 +84,7 @@ const submit = async () => {
 
         <div class="row q-mt-lg justify-around items-center">
           <q-btn label="Login" type="submit" color="primary" />
-          <a href="/users/create">Sign up</a>
+          <a href="/register">Sign up</a>
         </div>
       </q-form>
     </div>

@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +11,10 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      beforeEnter(to, from) {
+        // TODO : Condition with user logged or not ...
+        return { name: "login" };
+      },
     },
     {
       path: "/about",
@@ -31,11 +38,25 @@ const router = createRouter({
       path: "/conversations",
       name: "conversations.index",
       component: () => import("../views/Conversations-index.vue"),
+      beforeEnter() {
+        const isUserAuthentificated = async () => {
+          const res = await axios.get(API_URL + "profile-items/authenticated/");
+          return res.data;
+        };
+
+        if (isUserAuthentificated()) {
+          return { name: "login" };
+        }
+      },
     },
     {
       path: "/conversations/create",
       name: "conversations.create",
       component: () => import("../views/Conversations-create.vue"),
+      beforeEnter(to, from) {
+        // TODO : Condition with user logged or not ...
+        return { name: "login" };
+      },
     },
   ],
 });
