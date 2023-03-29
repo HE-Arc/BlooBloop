@@ -4,16 +4,41 @@ import { ref, onMounted } from "vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const message = ref("");
+
 const tab = ref("");
 const splitterModel = ref(20);
+
+const messageItems = ref([]);
 const conversationItems = ref([]);
 
 const fetchConversationItems = async () => {
   const res = await axios.get(API_URL + "conversation-items/");
   conversationItems.value = res.data;
 };
+
+const fetchMessages = async (index) => {
+  const res = await axios.get(API_URL + "message-items/");
+
+  messageItems.value = res.data.filter((msg) => msg.conversation.id === index);
+};
+
 const submitMessage = async () => {
-  // Intentionally empty (for now)
+  try {
+    // TODO: Terminer avec les users
+    // TODO: Améliorer la disposition du chat une fois que les utilisateurs seront connectés
+    errors.value = null;
+    success.value = false;
+
+    await axios.post(API_URL + "message-items/", {
+      content: message.value,
+    });
+
+    success.value = true;
+  } catch (error) {
+    console.log(error);
+    errors.value = error.response.data;
+  }
 };
 
 const remove = async (index) => {
@@ -25,6 +50,9 @@ const remove = async (index) => {
 onMounted(() => {
   fetchConversationItems();
 });
+
+const success = ref(false);
+const errors = ref(null);
 </script>
 
 <template>
@@ -39,6 +67,7 @@ onMounted(() => {
               :key="index"
               :name="item.name"
               :label="item.name"
+              @click="() => fetchMessages(item.id)"
             />
           </q-tabs>
         </template>
@@ -65,13 +94,18 @@ onMounted(() => {
               >
                 {{ user.user.username }}
               </p>
-              <q-form @submit="submitMessage" class="q-gutter-md">
-                <q-input
-                  filled
-                  v-model="name"
-                  label="Enter message.. (not functional)"
-                />
-                <div>
+              <div
+                class="q-mb-md"
+                v-for="message in messageItems"
+                :key="message.id"
+              >
+                <q-chat-message :name="message.profile.user.username">
+                  <div>{{ message.content }}</div>
+                </q-chat-message>
+              </div>
+              <q-form @submit="submitMessage">
+                <q-input filled v-model="message" label="Enter a message" />
+                <div class="q-mt-md">
                   <q-btn label="Send" type="submit" color="primary" />
                 </div>
               </q-form>

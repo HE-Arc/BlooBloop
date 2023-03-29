@@ -17,7 +17,7 @@ import { RouterView } from "vue-router";
         <q-separator dark vertical />
         <q-btn stretch flat label="About" to="/about" />
         <q-separator dark vertical />
-        <q-btn stretch flat label="Conversation" to="/conversations" />
+        <q-btn stretch flat label="Conversations" to="/conversations" />
       </q-toolbar>
     </div>
   </header>
