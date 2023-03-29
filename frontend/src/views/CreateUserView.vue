@@ -1,10 +1,10 @@
 <script setup>
 import axios from "axios";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { ref } from "vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const route = useRoute();
+const router = useRouter();
 
 const username = ref("");
 const email = ref("");
@@ -30,7 +30,9 @@ const submit = async () => {
         password: password.value,
       },
     });
-    route.push("/");
+    router.push({
+      path: "/login",
+    });
   } catch (error) {
     errors.value = error.response.data;
   }
