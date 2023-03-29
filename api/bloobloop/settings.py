@@ -62,6 +62,11 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(", ")
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+   "http://localhost:8000",
+   "http://127.0.0.1:8000",
+]
 ROOT_URLCONF = "bloobloop.urls"
 
 TEMPLATES = [
@@ -110,10 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    }
 ]
 
 

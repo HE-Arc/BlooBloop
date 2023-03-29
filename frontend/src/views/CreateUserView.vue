@@ -1,15 +1,16 @@
 <script setup>
 import axios from "axios";
+import { useRoute } from "vue-router";
 import { ref } from "vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const route = useRoute();
 
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const isPwd = ref(true);
 
-const success = ref(false);
 const errors = ref(null);
 
 const isValidEmail = (val) => {
@@ -20,7 +21,6 @@ const isValidEmail = (val) => {
 
 const submit = async () => {
   try {
-    success.value = false;
     errors.value = null;
 
     await axios.post(API_URL + "profile-items/", {
@@ -30,7 +30,7 @@ const submit = async () => {
         password: password.value,
       },
     });
-    success.value = true;
+    route.push("/");
   } catch (error) {
     errors.value = error.response.data;
   }

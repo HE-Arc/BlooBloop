@@ -1,8 +1,10 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -14,10 +16,26 @@ const submit = async () => {
   try {
     errors.value = null;
 
-    await axios.post(API_URL + "profile-items/login/", {
-      username: username.value,
-      password: password.value,
-    });
+    await axios
+      .post(
+        API_URL + "profile-items/login/",
+        {
+          username: username.value,
+          password: password.value,
+        },
+        {
+          headers: {
+            //"x-csrftoken": this.readCookie("csrftoken"),
+            accept: "application/json",
+            "content-type": "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        localStorage.setItem("access_token", response.data.access);
+        router.push({ path: "/" });
+      });
   } catch (error) {
     errors.value = error.response.data;
   }
