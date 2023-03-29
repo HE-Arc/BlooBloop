@@ -20,6 +20,27 @@ class ConversationItemViewSet(viewsets.ModelViewSet):
     queryset = ConversationItem.objects.all()
     serializer_class = ConversationItemSerializer
 
+    @action(detail=False, methods=["post"], url_path="custom-post")
+    def custom_conversation(self, request):
+        # Retrieve profiles from request
+        profile_ids = request.data["users"]
+        profiles = []
+
+        for id in profile_ids:
+            profiles.append(ProfileItem.objects.get(id=id))
+
+        # Conversation creation
+        new_conversation = ConversationItem()
+        new_conversation.name = request.data["name"]
+        new_conversation.save()
+
+        # add profiles to conversation
+        for profile in profiles:
+            new_conversation.users.add(profile)
+
+        return Response()
+
+
 class MessageItemViewSet(viewsets.ModelViewSet):
     queryset = MessageItem.objects.all()
     serializer_class = MessageItemSerializer

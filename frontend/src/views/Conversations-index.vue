@@ -58,8 +58,12 @@ onMounted(() => {
               :name="item.name"
             >
               <div class="text-h4 q-mb-md">{{ item.name }}</div>
-              <p>
-                This is where we would put our message history.. if we had one!
+              <p
+                v-for="(user, index) in item.users"
+                :key="index"
+                :name="user.user.username"
+              >
+                {{ user.user.username }}
               </p>
               <q-form @submit="submitMessage" class="q-gutter-md">
                 <q-input

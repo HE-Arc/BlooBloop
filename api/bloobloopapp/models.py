@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class ProfileItem(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    conversations = models.ManyToManyField("ConversationItem", blank=True)
+    # conversations = models.ManyToManyField("ConversationItem", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -14,9 +14,10 @@ class ProfileItem(models.Model):
 
 class ConversationItem(models.Model):
     name = models.CharField(max_length=50)
-    users = models.ManyToManyField(
-        ProfileItem, through=ProfileItem.conversations.through
-    )
+    users = models.ManyToManyField(ProfileItem, related_name="conversation_items")
+    # users = models.ManyToManyField(
+    #    ProfileItem, through=ProfileItem.conversations.through
+    # )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
