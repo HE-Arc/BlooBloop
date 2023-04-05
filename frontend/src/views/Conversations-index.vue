@@ -1,6 +1,9 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -19,6 +22,16 @@ const fetchConversationItems = async () => {
 
 const fetchMessages = async (index) => {
   const res = await axios.get(API_URL + "message-items/");
+  const res2 = await axios.get(API_URL + "profile-items/logged-user-id/", {
+    headers: {
+      "x-csrftoken": cookies.get("csrftoken"),
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    withCredentials: true,
+  });
+
+  console.log(res2.data);
 
   messageItems.value = res.data.filter((msg) => msg.conversation.id === index);
 };

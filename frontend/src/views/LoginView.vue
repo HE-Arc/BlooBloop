@@ -2,6 +2,9 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -15,6 +18,7 @@ const errors = ref(null);
 const submit = async () => {
   try {
     errors.value = null;
+    const csrfToken = cookies.get("csrftoken");
 
     await axios.post(
       API_URL + "profile-items/login/",
@@ -24,13 +28,14 @@ const submit = async () => {
       },
       {
         headers: {
-          //"x-csrftoken": this.readCookie("csrftoken"),
+          "x-csrftoken": csrfToken,
           accept: "application/json",
           "content-type": "application/json",
         },
         withCredentials: true,
       }
     );
+
     router.push({
       path: "/",
       params: { alert: "Logged in as " + username.value },

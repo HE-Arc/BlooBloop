@@ -6,7 +6,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, get_user, login, logout
 
 from .models import ConversationItem, MessageItem, ProfileItem
 from .serializers import (
@@ -15,6 +15,7 @@ from .serializers import (
     ProfileItemSerializer,
     UserSerializer,
 )
+
 
 class ConversationItemViewSet(viewsets.ModelViewSet):
     queryset = ConversationItem.objects.all()
@@ -56,15 +57,48 @@ class MessageItemViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProfileItemViewSet(viewsets.ModelViewSet):
     queryset = ProfileItem.objects.all()
     serializer_class = ProfileItemSerializer
-    
+
     @action(detail=False, methods=["post"])
     def login(self, request):
-        user = authenticate(username=request.data['username'], password=request.data['password'])
+        user = authenticate(
+            request=request,
+            username=request.data["username"],
+            password=request.data["password"],
+        )
+
         if user is not None:
             login(request, user)
             return Response(status=status.HTTP_200_OK)
-        
-        return Response({'error': 'Invalid username and/or password.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            {"error": "Invalid username and/or password."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=False, methods=["get"])
+    def logout(self, request):
+        logout(request=request)
+        print("Logged out")
+
+    @action(detail=False, methods=["get"], url_path="logged-user-id")
+    def get_logged_user_id(self, request):
+        if request.user is not None:
+            user = get_user(request=request)
+            profile = get_object_or_404(ProfileItem, user=user)
+
+            if user is not None and profile is not None:
+                return Response(data=profile.id, status=status.HTTP_200_OK)
+
+            return Response(
+                {"error": "User not defined"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {"error": "User not logged in"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
