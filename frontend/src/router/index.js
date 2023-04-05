@@ -4,6 +4,17 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const isUserAuthentificated = async () => {
+  const res = await axios.get(API_URL + "profile-items/authenticated/");
+  console.log(res.data);
+  // TODO : Fixme
+  return true;
+};
+
+const logout = async () => {
+  await axios.post(API_URL + "profile-items/logout/");
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -11,9 +22,10 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
-      beforeEnter(to, from) {
-        // TODO : Condition with user logged or not ...
-        return { name: "login" };
+      beforeEnter() {
+        if (!isUserAuthentificated()) {
+          return { name: "login" };
+        }
       },
     },
     {
@@ -32,19 +44,23 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
+
       component: () => import("../views/LoginView.vue"),
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      component: () => import("../views/LoginView.vue"),
+      beforeEnter() {
+        logout();
+      },
     },
     {
       path: "/conversations",
       name: "conversations.index",
       component: () => import("../views/Conversations-index.vue"),
       beforeEnter() {
-        const isUserAuthentificated = async () => {
-          const res = await axios.get(API_URL + "profile-items/authenticated/");
-          return res.data;
-        };
-
-        if (isUserAuthentificated()) {
+        if (!isUserAuthentificated()) {
           return { name: "login" };
         }
       },
@@ -53,9 +69,10 @@ const router = createRouter({
       path: "/conversations/create",
       name: "conversations.create",
       component: () => import("../views/Conversations-create.vue"),
-      beforeEnter(to, from) {
-        // TODO : Condition with user logged or not ...
-        return { name: "login" };
+      beforeEnter() {
+        if (!isUserAuthentificated()) {
+          return { name: "login" };
+        }
       },
     },
   ],

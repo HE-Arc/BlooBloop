@@ -15,6 +15,8 @@ import { RouterView } from "vue-router";
         <q-separator dark vertical />
         <q-btn stretch flat label="Sign up" to="/register" />
         <q-separator dark vertical />
+        <q-btn stretch flat label="Logout" to="/logout" />
+        <q-separator dark vertical />
         <q-btn stretch flat label="About" to="/about" />
         <q-separator dark vertical />
         <q-btn stretch flat label="Conversations" to="/conversations" />
