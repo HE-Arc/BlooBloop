@@ -2,17 +2,40 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import axios from "axios";
 
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 const isUserAuthentificated = async () => {
-  const res = await axios.get(API_URL + "profile-items/authenticated/");
+  const csrfToken = cookies.get("csrftoken");
+
+  const res = await axios.get(API_URL + "profile-items/authenticated/", {
+    headers: {
+      "x-csrftoken": csrfToken,
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    withCredentials: true,
+  });
+
   console.log(res.data);
-  // TODO : Fixme
-  return true;
+
+  return res.data;
 };
 
 const logout = async () => {
-  await axios.post(API_URL + "profile-items/logout/");
+  const csrfToken = cookies.get("csrftoken");
+
+  await axios.post(API_URL + "profile-items/logout/", {
+    headers: {
+      "x-csrftoken": csrfToken,
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    withCredentials: true,
+  });
 };
 
 const router = createRouter({
@@ -22,8 +45,8 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
-      beforeEnter() {
-        if (!isUserAuthentificated()) {
+      async beforeEnter() {
+        if (!(await isUserAuthentificated())) {
           return { name: "login" };
         }
       },
@@ -59,8 +82,8 @@ const router = createRouter({
       path: "/conversations",
       name: "conversations.index",
       component: () => import("../views/Conversations-index.vue"),
-      beforeEnter() {
-        if (!isUserAuthentificated()) {
+      async beforeEnter() {
+        if (!(await isUserAuthentificated())) {
           return { name: "login" };
         }
       },
@@ -69,8 +92,8 @@ const router = createRouter({
       path: "/conversations/create",
       name: "conversations.create",
       component: () => import("../views/Conversations-create.vue"),
-      beforeEnter() {
-        if (!isUserAuthentificated()) {
+      async beforeEnter() {
+        if (!(await isUserAuthentificated())) {
           return { name: "login" };
         }
       },
