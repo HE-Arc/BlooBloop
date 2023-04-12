@@ -78,4 +78,5 @@ class MessageItemSerializer(serializers.HyperlinkedModelSerializer):
             "content",
             "profile",
             "conversation",
+            "created_at",
         ]

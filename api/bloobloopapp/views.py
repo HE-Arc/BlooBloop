@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, authentication_classes, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
@@ -20,6 +20,9 @@ from .serializers import (
 class ConversationItemViewSet(viewsets.ModelViewSet):
     queryset = ConversationItem.objects.all()
     serializer_class = ConversationItemSerializer
+
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=["post"], url_path="custom-post")
     def custom_conversation(self, request):
@@ -41,13 +44,26 @@ class ConversationItemViewSet(viewsets.ModelViewSet):
 
         return Response()
 
+    @action(detail=False, methods=["get"], url_path="profile")
+    def get_logged_user_conversations(self, request):
+        user = get_user(request=request)
+        profile = get_object_or_404(ProfileItem, user=user)
+
+        profile_conversations = ConversationItem.objects.filter(users__exact=profile)
+        serializer = self.get_serializer(profile_conversations, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 class MessageItemViewSet(viewsets.ModelViewSet):
     queryset = MessageItem.objects.all()
     serializer_class = MessageItemSerializer
 
-    # The following method hasn't been tested
-    @action(detail=True, methods=["GET"], url_path="recent-messages")
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    #! TODO:FIX - The following method hasn't been tested - Doesn't work, but is it really necessary ?
+    @action(detail=False, methods=["GET"], url_path="recent-messages")
     def recent_messages(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         recent_messages = MessageItem.objects.filter(user=user).order_by("created_at")
@@ -56,6 +72,26 @@ class MessageItemViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["post"], url_path="custom-post")
+    def custom_message_create(self, request):
+        content = request.data["content"]
+        conversation_id = request.data["conversation_id"]
+
+        user = get_user(request=request)
+        profile = get_object_or_404(ProfileItem, user=user)
+
+        conversation = ConversationItem.objects.get(id=conversation_id)
+
+        # Message creation
+        new_message = MessageItem()
+        new_message.content = content
+        new_message.profile = profile
+        new_message.conversation = conversation
+
+        new_message.save()
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ProfileItemViewSet(viewsets.ModelViewSet):

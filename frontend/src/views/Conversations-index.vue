@@ -1,12 +1,14 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import { useCookies } from "vue3-cookies";
+import { useRouter } from "vue-router";
+import AxiosService from "../../utils/AxiosService.mjs";
 
-const { cookies } = useCookies();
+const router = useRouter();
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const loggedUserId = ref(-1);
 const message = ref("");
 
 const tab = ref("");
@@ -16,38 +18,29 @@ const messageItems = ref([]);
 const conversationItems = ref([]);
 
 const fetchConversationItems = async () => {
-  const res = await axios.get(API_URL + "conversation-items/");
+  const res = await AxiosService.GET(API_URL + "conversation-items/profile/");
   conversationItems.value = res.data;
 };
 
 const fetchMessages = async (index) => {
-  const res = await axios.get(API_URL + "message-items/");
-  const res2 = await axios.get(API_URL + "profile-items/logged-user-id/", {
-    headers: {
-      "x-csrftoken": cookies.get("csrftoken"),
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    withCredentials: true,
-  });
-
-  console.log(res2.data);
-
+  const res = await AxiosService.GET(API_URL + "message-items/");
   messageItems.value = res.data.filter((msg) => msg.conversation.id === index);
 };
 
-const submitMessage = async () => {
+const submitMessage = async (index) => {
   try {
-    // TODO: Terminer avec les users
-    // TODO: Améliorer la disposition du chat une fois que les utilisateurs seront connectés
     errors.value = null;
     success.value = false;
 
-    await axios.post(API_URL + "message-items/", {
+    await AxiosService.POST(API_URL + "message-items/custom-post/", {
       content: message.value,
+      conversation_id: index,
     });
 
     success.value = true;
+    router.push({
+      path: "/conversations",
+    });
   } catch (error) {
     console.log(error);
     errors.value = error.response.data;
@@ -60,7 +53,12 @@ const remove = async (index) => {
   await fetchConversationItems();
 };
 
-onMounted(() => {
+onMounted(async () => {
+  const userId = await AxiosService.GET(
+    API_URL + "profile-items/logged-user-id/"
+  );
+
+  loggedUserId.value = userId.data;
   fetchConversationItems();
 });
 
@@ -100,23 +98,34 @@ const errors = ref(null);
               :name="item.name"
             >
               <div class="text-h4 q-mb-md">{{ item.name }}</div>
-              <p
-                v-for="(user, index) in item.users"
-                :key="index"
-                :name="user.user.username"
-              >
-                {{ user.user.username }}
+              <p>
+                <span
+                  v-for="(user, index) in item.users"
+                  :key="index"
+                  :name="user.user.username"
+                >
+                  {{ user.user.username }},
+                </span>
               </p>
               <div
                 class="q-mb-md"
                 v-for="message in messageItems"
                 :key="message.id"
               >
-                <q-chat-message :name="message.profile.user.username">
-                  <div>{{ message.content }}</div>
-                </q-chat-message>
+                <q-chat-message
+                  :name="message.profile.user.username"
+                  :text="[message.content]"
+                  :stamp="message.created_at"
+                  :sent="message.profile.id === loggedUserId"
+                  :text-color="
+                    message.profile.id === loggedUserId ? 'black' : 'white'
+                  "
+                  :bg-color="
+                    message.profile.id === loggedUserId ? 'green' : 'primary' //amber-7
+                  "
+                />
               </div>
-              <q-form @submit="submitMessage">
+              <q-form @submit="(_$event) => submitMessage(item.id)">
                 <q-input filled v-model="message" label="Enter a message" />
                 <div class="q-mt-md">
                   <q-btn label="Send" type="submit" color="primary" />
