@@ -20,11 +20,7 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
-      async beforeEnter() {
-        if (!(await isUserAuthentificated())) {
-          return { name: "login" };
-        }
-      },
+      props: true,
     },
     {
       path: "/about",
