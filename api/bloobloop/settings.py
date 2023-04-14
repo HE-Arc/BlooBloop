@@ -148,9 +148,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Authentication by session
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-
-# Timelife of a session
-SESSION_COOKIE_AGE = 86400  # 1 day
