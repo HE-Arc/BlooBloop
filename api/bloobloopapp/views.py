@@ -125,7 +125,6 @@ class ProfileItemViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="logout")
     def logout(self, request):
         logout(request=request)
-        print("Logged out")
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"], url_path="logged-user-id")

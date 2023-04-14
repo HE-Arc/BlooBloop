@@ -1,18 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import axios from "axios";
+import AxiosService from "../../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const isUserAuthentificated = async () => {
-  const res = await axios.get(API_URL + "profile-items/authenticated/");
-  console.log(res.data);
-  // TODO : Fixme
-  return true;
+  const res = await AxiosService.GET(API_URL + "profile-items/authenticated/");
+  return res.data;
 };
 
 const logout = async () => {
-  await axios.post(API_URL + "profile-items/logout/");
+  await AxiosService.POST(API_URL + "profile-items/logout/");
 };
 
 const router = createRouter({
@@ -22,8 +20,8 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
-      beforeEnter() {
-        if (!isUserAuthentificated()) {
+      async beforeEnter() {
+        if (!(await isUserAuthentificated())) {
           return { name: "login" };
         }
       },
@@ -51,16 +49,16 @@ const router = createRouter({
       path: "/logout",
       name: "logout",
       component: () => import("../views/LoginView.vue"),
-      beforeEnter() {
-        logout();
+      async beforeEnter() {
+        await logout();
       },
     },
     {
       path: "/conversations",
       name: "conversations.index",
       component: () => import("../views/Conversations-index.vue"),
-      beforeEnter() {
-        if (!isUserAuthentificated()) {
+      async beforeEnter() {
+        if (!(await isUserAuthentificated())) {
           return { name: "login" };
         }
       },
@@ -69,8 +67,8 @@ const router = createRouter({
       path: "/conversations/create",
       name: "conversations.create",
       component: () => import("../views/Conversations-create.vue"),
-      beforeEnter() {
-        if (!isUserAuthentificated()) {
+      async beforeEnter() {
+        if (!(await isUserAuthentificated())) {
           return { name: "login" };
         }
       },

@@ -1,5 +1,4 @@
 <script setup>
-import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import AxiosService from "../../utils/AxiosService.mjs";
@@ -48,7 +47,7 @@ const submitMessage = async (index) => {
 };
 
 const remove = async (index) => {
-  await axios.delete(API_URL + `conversation-items/${index}/`);
+  await AxiosService.DELETE(API_URL + `conversation-items/${index}/`);
 
   await fetchConversationItems();
 };

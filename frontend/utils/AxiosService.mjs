@@ -28,4 +28,8 @@ export default class AxiosService {
   static get POST() {
     return axios.create(AxiosService.#HEADER_CONFIG).post;
   }
+
+  static get DELETE() {
+    return axios.create(AxiosService.#HEADER_CONFIG).delete;
+  }
 }

@@ -1,7 +1,7 @@
 <script setup>
-import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import AxiosService from "../../utils/AxiosService.mjs";
 
 // Environment variable setup
 const API_URL = import.meta.env.VITE_API_URL;
@@ -24,7 +24,7 @@ const submit = async () => {
 
     console.log(profiles);
 
-    await axios.post(API_URL + "conversation-items/custom-post/", {
+    await AxiosService.POST(API_URL + "conversation-items/custom-post/", {
       name: name.value,
       users: profiles,
     });
@@ -39,7 +39,7 @@ const submit = async () => {
 
 // Retrieve users
 const fetchUserItems = async () => {
-  const res = await axios.get(API_URL + "profile-items/");
+  const res = await AxiosService.GET(API_URL + "profile-items/");
 
   selectedUsers.value = [res.data[0]];
 
