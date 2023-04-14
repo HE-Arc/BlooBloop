@@ -128,13 +128,32 @@ class ProfileItemViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"], url_path="logged-user-id")
-    def get_logged_user_id(self, request):
+    def get_logged_profile_id(self, request):
         if request.user is not None:
             user = get_user(request=request)
             profile = get_object_or_404(ProfileItem, user=user)
 
             if user is not None and profile is not None:
                 return Response(data=profile.id, status=status.HTTP_200_OK)
+
+            return Response(
+                {"error": "User not defined"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {"error": "User not logged in"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=False, methods=["get"], url_path="logged-username")
+    def get_logged_username(self, request):
+        if request.user is not None:
+            user = get_user(request=request)
+            profile = get_object_or_404(ProfileItem, user=user)
+
+            if user is not None and profile is not None:
+                return Response(data=user.username, status=status.HTTP_200_OK)
 
             return Response(
                 {"error": "User not defined"},
