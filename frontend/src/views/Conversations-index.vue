@@ -3,9 +3,9 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import AxiosService from "../../utils/AxiosService.mjs";
 
-const router = useRouter();
-
 const API_URL = import.meta.env.VITE_API_URL;
+const router = useRouter();
+const errors = ref(null);
 
 const loggedUserId = ref(-1);
 const message = ref("");
@@ -17,52 +17,53 @@ const messageItems = ref([]);
 const conversationItems = ref([]);
 
 const fetchConversationItems = async () => {
-  const res = await AxiosService.GET(API_URL + "conversation-items/profile/");
-  conversationItems.value = res.data;
+  await AxiosService.GET(`${API_URL}conversation-items/profile/`).then(
+    (response) => {
+      conversationItems.value = response.data;
+    }
+  );
 };
 
 const fetchMessages = async (index) => {
-  const res = await AxiosService.GET(API_URL + "message-items/");
-  messageItems.value = res.data.filter((msg) => msg.conversation.id === index);
+  await AxiosService.GET(`${API_URL}message-items/`).then((response) => {
+    messageItems.value = response.data.filter(
+      (msg) => msg.conversation.id === index
+    );
+  });
 };
 
 const submitMessage = async (index) => {
-  try {
-    errors.value = null;
-    success.value = false;
+  errors.value = null;
 
-    await AxiosService.POST(API_URL + "message-items/custom-post/", {
-      content: message.value,
-      conversation_id: index,
-    });
-
-    success.value = true;
-    router.push({
-      path: "/conversations",
-    });
-  } catch (error) {
-    console.log(error);
-    errors.value = error.response.data;
-  }
+  await AxiosService.POST(`${API_URL}message-items/custom-post/`, {
+    content: message.value,
+    conversation_id: index,
+  }).then(
+    () => {
+      router.push({
+        path: "/conversations",
+      });
+    },
+    (error) => {
+      errors.value = error.response.data;
+    }
+  );
 };
 
 const remove = async (index) => {
-  await AxiosService.DELETE(API_URL + `conversation-items/${index}/`);
+  await AxiosService.DELETE(`${API_URL}conversation-items/${index}/`);
 
   await fetchConversationItems();
 };
 
 onMounted(async () => {
-  const userId = await AxiosService.GET(
-    API_URL + "profile-items/logged-user-id/"
+  await AxiosService.GET(`${API_URL}profile-items/logged-user-id/`).then(
+    (response) => {
+      loggedUserId.value = response.data;
+      fetchConversationItems();
+    }
   );
-
-  loggedUserId.value = userId.data;
-  fetchConversationItems();
 });
-
-const success = ref(false);
-const errors = ref(null);
 </script>
 
 <template>

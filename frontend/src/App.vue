@@ -1,29 +1,44 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { RouterView } from "vue-router";
+import axios from "axios";
+import { ref, onMounted, watch } from "vue";
+import { useRoute, useRouter, RouterView } from "vue-router";
 import AxiosService from "../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const route = useRoute();
+const router = useRouter();
 
 const userLogged = ref(false);
 const username = ref("");
 
 const isUserLogged = async () => {
-  const res = await AxiosService.GET(API_URL + "profile-items/authenticated/");
+  const res = await AxiosService.GET(`${API_URL}profile-items/authenticated/`);
   return res.data;
 };
 
 const fetchUsername = async () => {
   const user = await AxiosService.GET(
-    API_URL + "profile-items/logged-username/"
+    `${API_URL}profile-items/logged-username/`
   );
 
   username.value = user.data;
 };
 
+const logout = async () => {
+  await AxiosService.POST(`${API_URL}profile-items/logout/`).then(() => {
+    userLogged.value = false;
+    router.push({ path: "/" });
+  });
+};
+
 onMounted(async () => {
-  userLogged.value = await isUserLogged();
-  await fetchUsername();
+  watch(
+    () => route.path,
+    async () => {
+      userLogged.value = await isUserLogged();
+      await fetchUsername();
+    }
+  );
 });
 </script>
 
@@ -35,24 +50,18 @@ onMounted(async () => {
 
         <q-space />
 
-        <p v-if="userLogged == true" class="text-h6" style="margin: 0px">
+        <p v-if="userLogged" class="text-h6" style="margin: 0px">
           {{ username }}
         </p>
 
         <q-space />
 
         <q-separator dark vertical />
-        <q-btn stretch flat label="Login" to="/login" />
+        <q-btn stretch flat label="Login" to="/login" v-if="!userLogged" />
         <q-separator dark vertical />
-        <q-btn stretch flat label="Sign up" to="/register" />
+        <q-btn stretch flat label="Sign up" to="/register" v-if="!userLogged" />
         <q-separator dark vertical />
-        <q-btn
-          v-if="userLogged == true"
-          stretch
-          flat
-          label="Logout"
-          to="/logout"
-        />
+        <q-btn v-if="userLogged" stretch flat label="Logout" @click="logout" />
         <q-separator v-if="userLogged == true" dark vertical />
         <q-btn stretch flat label="About" to="/about" />
         <q-separator v-if="userLogged == true" dark vertical />

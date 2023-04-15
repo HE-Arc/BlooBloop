@@ -1,10 +1,7 @@
 <script setup>
-import axios from "axios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { useCookies } from "vue3-cookies";
-
-const { cookies } = useCookies();
+import AxiosService from "../../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -25,37 +22,22 @@ const isValidEmail = (val) => {
 const submit = async () => {
   errors.value = null;
 
-  await axios
-    .post(API_URL + "profile-items/", {
-      user: {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-      },
-    })
+  await AxiosService.POST(`${API_URL}profile-items/`, {
+    user: {
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    },
+  })
     .then(async () => {
-      const csrfToken = cookies.get("csrftoken");
-      await axios
-        .post(
-          API_URL + "profile-items/login/",
-          {
-            username: username.value,
-            password: password.value,
-          },
-          {
-            headers: {
-              "x-csrftoken": csrfToken,
-              accept: "application/json",
-              "content-type": "application/json",
-            },
-            withCredentials: true,
-          }
-        )
-        .then(() => {
-          router.push({
-            path: "/",
-          });
+      await AxiosService.POST(`${API_URL}profile-items/login/`, {
+        username: username.value,
+        password: password.value,
+      }).then(() => {
+        router.push({
+          path: "/",
         });
+      });
     })
     .catch((error) => {
       errors.value = error + ": register failed.";

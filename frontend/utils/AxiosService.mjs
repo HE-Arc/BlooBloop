@@ -21,6 +21,10 @@ export default class AxiosService {
   |*                           PUBLIC                            *|
   \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+  static updateCsrfToken() {
+    AxiosService.#HEADER_CONFIG.headers['x-csrftoken'] = cookies.get("csrftoken");
+  }
+
   static get GET() {
     return axios.create(AxiosService.#HEADER_CONFIG).get;
   }

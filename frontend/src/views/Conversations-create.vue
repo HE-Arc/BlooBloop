@@ -6,6 +6,7 @@ import AxiosService from "../../utils/AxiosService.mjs";
 // Environment variable setup
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
+const errors = ref(null);
 
 // Conversation variable setup
 const name = ref("");
@@ -16,21 +17,17 @@ const profileOptions = [];
 const submit = async () => {
   try {
     errors.value = null;
-    success.value = false;
 
     let profiles = [];
-
     selectedUsers.value.forEach((user) => profiles.push(user.id));
 
-    console.log(profiles);
-
-    await AxiosService.POST(API_URL + "conversation-items/custom-post/", {
+    await AxiosService.POST(`${API_URL}conversation-items/custom-post/`, {
       name: name.value,
       users: profiles,
-    });
-
-    router.push({
-      path: "/conversations",
+    }).then(() => {
+      router.push({
+        path: "/conversations",
+      });
     });
   } catch (error) {
     errors.value = error.response.data;
@@ -39,19 +36,13 @@ const submit = async () => {
 
 // Retrieve users
 const fetchUserItems = async () => {
-  const res = await AxiosService.GET(API_URL + "profile-items/");
-
-  selectedUsers.value = [res.data[0]];
-
-  res.data.forEach((profile) => {
-    profileOptions.push({ label: profile.user.username, value: profile });
+  await AxiosService.GET(`${API_URL}profile-items/`).then((response) => {
+    selectedUsers.value = [response.data[0]];
+    response.data.forEach((profile) => {
+      profileOptions.push({ label: profile.user.username, value: profile });
+    });
   });
-
-  console.log(profileOptions);
 };
-
-const success = ref(false);
-const errors = ref(null);
 
 onMounted(() => {
   fetchUserItems();

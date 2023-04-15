@@ -1,10 +1,7 @@
 <script setup>
-import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useCookies } from "vue3-cookies";
-
-const { cookies } = useCookies();
+import AxiosService from "../../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -16,33 +13,23 @@ const isPwd = ref(true);
 const errors = ref(null);
 
 const submit = async () => {
-  try {
-    errors.value = null;
-    const csrfToken = cookies.get("csrftoken");
+  errors.value = null;
 
-    await axios.post(
-      API_URL + "profile-items/login/",
-      {
-        username: username.value,
-        password: password.value,
-      },
-      {
-        headers: {
-          "x-csrftoken": csrfToken,
-          accept: "application/json",
-          "content-type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-
-    router.push({
-      path: "/",
-      params: { alert: "Logged in as " + username.value },
-    });
-  } catch (error) {
-    errors.value = error.response.data;
-  }
+  await AxiosService.POST(`${API_URL}profile-items/login/`, {
+    username: username.value,
+    password: password.value,
+  }).then(
+    () => {
+      AxiosService.updateCsrfToken();
+      router.push({
+        path: "/",
+        params: { alert: "Logged in as " + username.value },
+      });
+    },
+    (error) => {
+      errors.value = error.response.data;
+    }
+  );
 };
 </script>
 
