@@ -108,7 +108,7 @@ const submit = async () => {
 
         <div class="row q-mt-lg justify-around items-center">
           <q-btn label="Sign up" type="submit" color="primary" />
-          <a href="/users/login">Log in</a>
+          <router-link to="/login">Log in</router-link>
         </div>
       </q-form>
     </div>
