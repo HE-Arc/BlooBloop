@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import AxiosService from "../../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const route = useRoute();
 const router = useRouter();
 const errors = ref(null);
 
@@ -16,6 +17,8 @@ const splitterModel = ref(20);
 const messageItems = ref([]);
 const conversationItems = ref([]);
 
+const intervalId = ref(null);
+
 const fetchConversationItems = async () => {
   await AxiosService.GET(`${API_URL}conversation-items/profile/`).then(
     (response) => {
@@ -24,12 +27,19 @@ const fetchConversationItems = async () => {
   );
 };
 
-const fetchMessages = async (index) => {
+const fetchMessages = async (id) => {
   await AxiosService.GET(`${API_URL}message-items/`).then((response) => {
     messageItems.value = response.data.filter(
-      (msg) => msg.conversation.id === index
+      (msg) => msg.conversation.id === id
     );
   });
+};
+
+const startFetchingMessages = async (id) => {
+  clearInterval(intervalId.value);
+
+  fetchMessages(id);
+  intervalId.value = setInterval(fetchMessages, 1000, id);
 };
 
 const submitMessage = async (index) => {
@@ -63,6 +73,13 @@ onMounted(async () => {
       fetchConversationItems();
     }
   );
+
+  watch(
+    () => route.path,
+    () => {
+      clearInterval(intervalId.value);
+    }
+  );
 });
 </script>
 
@@ -78,7 +95,7 @@ onMounted(async () => {
               :key="index"
               :name="item.name"
               :label="item.name"
-              @click="() => fetchMessages(item.id)"
+              @click="() => startFetchingMessages(item.id)"
             />
           </q-tabs>
         </template>
