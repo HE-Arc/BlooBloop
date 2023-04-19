@@ -8,17 +8,42 @@ const route = useRoute();
 const router = useRouter();
 
 const name = ref("");
+const selectedProfiles = ref([]);
+const allProfiles = ref([]);
 
 const fetchConversation = async () => {
   await AxiosService.GET(
     `${API_URL}conversation-items/${route.params.id}/`
   ).then((response) => {
     name.value = response.data.name;
+    response.data.users.forEach((profile) => {
+      selectedProfiles.value.push(profile.id);
+    });
   });
 };
+const fetchProfiles = async () => {
+  await AxiosService.GET(`${API_URL}profile-items/`).then((response) => {
+    response.data.forEach((profile) => {
+      allProfiles.value.push({ label: profile.user.username, value: profile });
+    });
+
+    let profiles = selectedProfiles.value;
+    selectedProfiles.value = [];
+    response.data.forEach((profile) => {
+      profiles.forEach((id) => {
+        if (profile.id === id) {
+          selectedProfiles.value.push(profile);
+        }
+      });
+    });
+  });
+};
+
 const submit = async () => {
   await AxiosService.PATCH(`${API_URL}conversation-items/${route.params.id}/`, {
+    id: route.params.id,
     name: name.value,
+    users: selectedProfiles.value,
   }).then(
     () => {
       router.push("/conversations");
@@ -31,6 +56,7 @@ const submit = async () => {
 
 onMounted(async () => {
   await fetchConversation();
+  await fetchProfiles();
 });
 </script>
 
@@ -44,6 +70,13 @@ onMounted(async () => {
         label="Conversation name"
         lazy-rules
         :rules="[(val) => (val && val.length > 0) || 'Name is missing']"
+      />
+      <p class="text-weight-bold">Users</p>
+      <q-option-group
+        v-model="selectedProfiles"
+        :options="allProfiles"
+        color="green"
+        type="checkbox"
       />
       <div class="row justify-center">
         <q-btn label="Update" type="submit" color="primary" />

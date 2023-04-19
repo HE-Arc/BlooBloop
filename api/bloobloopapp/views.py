@@ -16,7 +16,6 @@ from .serializers import (
     UserSerializer,
 )
 
-
 class ConversationItemViewSet(viewsets.ModelViewSet):
     queryset = ConversationItem.objects.all()
     serializer_class = ConversationItemSerializer
@@ -42,6 +41,18 @@ class ConversationItemViewSet(viewsets.ModelViewSet):
         for profile in profiles:
             new_conversation.users.add(profile)
 
+        return Response()
+    
+    def partial_update(self, request, *args, **kwargs):
+        print("ID:", request.data)
+        instance = get_object_or_404(ConversationItem, id=request.data['id'])
+        instance.name = request.data['name']
+        
+        instance.users.clear()
+        for profile in request.data["users"]:
+            instance.users.add(profile['id'])       
+            
+        instance.save()
         return Response()
 
     @action(detail=False, methods=["get"], url_path="profile")
