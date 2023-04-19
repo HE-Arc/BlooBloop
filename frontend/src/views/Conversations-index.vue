@@ -2,14 +2,17 @@
 import { ref, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AxiosService from "../../utils/AxiosService.mjs";
+import moment from "moment";
+
+import "@/assets/shake.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const route = useRoute();
 const router = useRouter();
-const errors = ref(null);
 
 const loggedUserId = ref(-1);
 const message = ref("");
+const shake = ref(false);
 
 const tab = ref("");
 const splitterModel = ref(20);
@@ -28,11 +31,11 @@ const fetchConversationItems = async () => {
 };
 
 const fetchMessages = async (id) => {
-  await AxiosService.GET(`${API_URL}message-items/`).then((response) => {
-    messageItems.value = response.data.filter(
-      (msg) => msg.conversation.id === id
-    );
-  });
+  const response = await AxiosService.GET(`${API_URL}message-items/`);
+
+  messageItems.value = response.data.filter(
+    (msg) => msg.conversation.id === id
+  );
 };
 
 const startFetchingMessages = async (id) => {
@@ -43,21 +46,28 @@ const startFetchingMessages = async (id) => {
 };
 
 const submitMessage = async (index) => {
-  errors.value = null;
-
-  await AxiosService.POST(`${API_URL}message-items/custom-post/`, {
-    content: message.value,
-    conversation_id: index,
-  }).then(
-    () => {
-      router.push({
-        path: "/conversations",
-      });
-    },
-    (error) => {
-      errors.value = error.response.data;
+  const result = await AxiosService.POST(
+    `${API_URL}message-items/custom-post/`,
+    {
+      content: message.value,
+      conversation_id: index,
     }
   );
+
+  if (result.status == 201) {
+    message.value = "";
+    new Audio("/tunes/send.mp3").play();
+
+    router.push({
+      path: "/conversations",
+    });
+  } else {
+    new Audio("/tunes/wrong.mp3").play();
+    shake.value = true;
+    setTimeout(() => {
+      shake.value = false;
+    }, 820);
+  }
 };
 
 const remove = async (index) => {
@@ -132,7 +142,7 @@ onMounted(async () => {
                 <q-chat-message
                   :name="message.profile.user.username"
                   :text="[message.content]"
-                  :stamp="message.created_at"
+                  :stamp="moment(message.created_at).format('LLLL')"
                   :sent="message.profile.id === loggedUserId"
                   :text-color="
                     message.profile.id === loggedUserId ? 'black' : 'white'
@@ -143,7 +153,12 @@ onMounted(async () => {
                 />
               </div>
               <q-form @submit="(_$event) => submitMessage(item.id)">
-                <q-input filled v-model="message" label="Enter a message" />
+                <q-input
+                  :class="{ 'apply-shake': shake }"
+                  filled
+                  v-model="message"
+                  label="Enter a message"
+                />
                 <div class="q-mt-md">
                   <q-btn label="Send" type="submit" color="primary" />
                 </div>
