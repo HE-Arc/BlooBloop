@@ -33,6 +33,14 @@ export default class AxiosService {
     return axios.create(AxiosService.#HEADER_CONFIG).post;
   }
 
+  static get PUT() {
+    return axios.create(AxiosService.#HEADER_CONFIG).put;
+  }
+
+  static get PATCH() {
+    return axios.create(AxiosService.#HEADER_CONFIG).patch;
+  }
+
   static get DELETE() {
     return axios.create(AxiosService.#HEADER_CONFIG).delete;
   }

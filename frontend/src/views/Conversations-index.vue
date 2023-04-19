@@ -150,7 +150,11 @@ onMounted(async () => {
               </q-form>
               <div class="q-mt-md row justify-end">
                 <q-btn color="negative" @click="remove(item.id)">Delete</q-btn>
-                <q-btn class="q-ml-md" color="warning">Update</q-btn>
+                <q-btn class="q-ml-md" color="warning">
+                  <router-link :to="`conversations/${item.id}`"
+                    >Update</router-link
+                  >
+                </q-btn>
               </div>
             </q-tab-panel>
           </q-tab-panels>
@@ -165,3 +169,12 @@ onMounted(async () => {
     </div>
   </main>
 </template>
+
+<style scoped>
+a {
+  text-decoration: none;
+}
+a:visited {
+  color: white;
+}
+</style>

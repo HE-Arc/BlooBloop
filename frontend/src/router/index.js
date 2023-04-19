@@ -4,15 +4,20 @@ import AxiosService from "../../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const isUserAuthentificated = async () => {
-  const res = await AxiosService.GET(API_URL + "profile-items/authenticated/");
-  return res.data;
+const authenticationGuard = (to, from, next) => {
+  AxiosService.GET(`${API_URL}profile-items/authenticated/`).then(
+    (response) => {
+      if (response.data) {
+        next();
+      } else {
+        next({ path: "/login" });
+      }
+    },
+    () => {
+      next({ path: "/login" });
+    }
+  );
 };
-
-// const logout = async () => {
-//   await AxiosService.POST(API_URL + "profile-items/logout/");
-//   localStorage.removeItem("user");
-// };
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,33 +47,28 @@ const router = createRouter({
 
       component: () => import("../views/LoginView.vue"),
     },
-    // {
-    //   path: "/logout",
-    //   name: "logout",
-    //   component: () => import("../views/LoginView.vue"),
-    //   async beforeEnter() {
-    //     await logout();
-    //   },
-    // },
+    {
+      path: "/logout",
+      name: "logout",
+      component: () => import("../views/LoginView.vue"),
+      beforeEnter: authenticationGuard,
+    },
     {
       path: "/conversations",
       name: "conversations.index",
       component: () => import("../views/Conversations-index.vue"),
-      async beforeEnter() {
-        if (!(await isUserAuthentificated())) {
-          return { name: "login" };
-        }
-      },
+      beforeEnter: authenticationGuard,
     },
     {
       path: "/conversations/create",
       name: "conversations.create",
       component: () => import("../views/Conversations-create.vue"),
-      async beforeEnter() {
-        if (!(await isUserAuthentificated())) {
-          return { name: "login" };
-        }
-      },
+      beforeEnter: authenticationGuard,
+    },
+    {
+      path: "/conversations/:id",
+      component: () => import("../views/Conversations-update.vue"),
+      beforeEnter: authenticationGuard,
     },
   ],
 });

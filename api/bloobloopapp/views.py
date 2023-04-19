@@ -54,7 +54,6 @@ class ConversationItemViewSet(viewsets.ModelViewSet):
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-
 class MessageItemViewSet(viewsets.ModelViewSet):
     queryset = MessageItem.objects.all()
     serializer_class = MessageItemSerializer
