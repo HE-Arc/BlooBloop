@@ -21,6 +21,7 @@ const submit = async () => {
   }).then(
     () => {
       AxiosService.updateCsrfToken();
+      localStorage.setItem("user", username.value);
       router.push({
         path: "/",
         params: { alert: "Logged in as " + username.value },

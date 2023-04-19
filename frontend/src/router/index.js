@@ -9,9 +9,10 @@ const isUserAuthentificated = async () => {
   return res.data;
 };
 
-const logout = async () => {
-  await AxiosService.POST(API_URL + "profile-items/logout/");
-};
+// const logout = async () => {
+//   await AxiosService.POST(API_URL + "profile-items/logout/");
+//   localStorage.removeItem("user");
+// };
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,14 +42,14 @@ const router = createRouter({
 
       component: () => import("../views/LoginView.vue"),
     },
-    {
-      path: "/logout",
-      name: "logout",
-      component: () => import("../views/LoginView.vue"),
-      async beforeEnter() {
-        await logout();
-      },
-    },
+    // {
+    //   path: "/logout",
+    //   name: "logout",
+    //   component: () => import("../views/LoginView.vue"),
+    //   async beforeEnter() {
+    //     await logout();
+    //   },
+    // },
     {
       path: "/conversations",
       name: "conversations.index",
