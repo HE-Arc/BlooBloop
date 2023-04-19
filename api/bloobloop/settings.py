@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "bloobloopapp",
     "rest_framework",
     "corsheaders",
+    "channels",
 ]
 
 REST_FRAMEWORK = {
@@ -95,6 +96,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "bloobloop.wsgi.application"
+
+ASGI_APPLICATION = "project.routing.application"  # routing.py will be created later
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 
 # Database
