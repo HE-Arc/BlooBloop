@@ -75,13 +75,16 @@ class MessageItemViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="custom-post")
     def custom_message_create(self, request):
-        content = request.data["content"]
+        content = request.data["content"].strip()
         conversation_id = request.data["conversation_id"]
 
         user = get_user(request=request)
         profile = get_object_or_404(ProfileItem, user=user)
 
         conversation = ConversationItem.objects.get(id=conversation_id)
+
+        if not content:
+            return Response(data="Content is empty", status=status.HTTP_204_NO_CONTENT)
 
         # Message creation
         new_message = MessageItem()
