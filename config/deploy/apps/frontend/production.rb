@@ -10,7 +10,7 @@ namespace :npm do
     desc 'Rebuild VueJS'
     task :build do
         on roles([:app, :web]) do |h|
-            execute "cd #{release_path}; npm run build"
+            execute "cd #{release_path}; npm install; npm run build"
         end
     end
 end
