@@ -21,11 +21,12 @@ const logout = async () => {
 };
 
 const updateUser = () => {
-  let user = localStorage.getItem("user");
+  let jsonUser = localStorage.getItem("user");
 
-  if (user != null) {
+  if (jsonUser != null) {
+    let user = JSON.parse(jsonUser);
     userLogged.value = true;
-    username.value = user.toUpperCase();
+    username.value = user.name.toUpperCase();
   } else {
     userLogged.value = false;
     username.value = "";

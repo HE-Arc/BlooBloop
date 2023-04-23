@@ -39,16 +39,16 @@ ALLOWED_HOSTS = env("ALLOWED_HOST").split(", ")
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "bloobloopapp",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "bloobloopapp",
     "rest_framework",
     "corsheaders",
-    "channels",
 ]
 
 REST_FRAMEWORK = {
@@ -97,7 +97,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bloobloop.wsgi.application"
 
-ASGI_APPLICATION = "project.routing.application"  # routing.py will be created later
+ASGI_APPLICATION = "bloobloop.asgi.application"  # routing.py will be created later
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 

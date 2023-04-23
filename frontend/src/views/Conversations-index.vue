@@ -7,8 +7,11 @@ import moment from "moment";
 import "@/assets/shake.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const WS_HOST = import.meta.env.VITE_WEBSOCKET_HOST;
+
 const route = useRoute();
 const router = useRouter();
+const errors = ref(null);
 
 const loggedUserId = ref(-1);
 const message = ref("");
@@ -20,7 +23,7 @@ const splitterModel = ref(20);
 const messageItems = ref([]);
 const conversationItems = ref([]);
 
-const intervalId = ref(null);
+let webSocket = null;
 
 const fetchConversationItems = async () => {
   await AxiosService.GET(`${API_URL}conversation-items/profile/`).then(
@@ -38,11 +41,27 @@ const fetchMessages = async (id) => {
   );
 };
 
-const startFetchingMessages = async (id) => {
-  clearInterval(intervalId.value);
+const startWebSocket = async (id) => {
+  webSocket = new WebSocket("ws://" + WS_HOST + "/ws/chat/" + id + "/");
 
+  // receive message
+  webSocket.onmessage = () => {
+    fetchMessages(id);
+  };
+};
+
+const closeWebSocket = async () => {
+  if (webSocket != null) {
+    webSocket.close();
+    webSocket = null;
+  }
+};
+
+const startFetchingMessages = async (id) => {
+  await closeWebSocket();
+
+  startWebSocket(id);
   fetchMessages(id);
-  intervalId.value = setInterval(fetchMessages, 1000, id);
 };
 
 const submitMessage = async (index) => {
@@ -68,6 +87,16 @@ const submitMessage = async (index) => {
       shake.value = false;
     }, 820);
   }
+
+  webSocket.send(
+    JSON.stringify({
+      message: message.value,
+    })
+  );
+
+  message.value = "";
+
+  fetchMessages(index);
 };
 
 const remove = async (index) => {
@@ -77,17 +106,21 @@ const remove = async (index) => {
 };
 
 onMounted(async () => {
-  await AxiosService.GET(`${API_URL}profile-items/logged-user-id/`).then(
-    (response) => {
-      loggedUserId.value = response.data;
-      fetchConversationItems();
-    }
-  );
+  let jsonUser = localStorage.getItem("user");
 
+  if (jsonUser != null) {
+    let user = JSON.parse(jsonUser);
+    loggedUserId.value = user.id;
+
+    fetchConversationItems();
+  }
+
+  // ! TODO : FIX not closing web socket when leaving conversation page because doesn't pass by the listener
   watch(
     () => route.path,
     () => {
-      clearInterval(intervalId.value);
+      console.log("ON QUITTE LES CONV !!!");
+      closeWebSocket();
     }
   );
 });
@@ -134,21 +167,17 @@ onMounted(async () => {
                   {{ user.user.username }},
                 </span>
               </p>
-              <div
-                class="q-mb-md"
-                v-for="message in messageItems"
-                :key="message.id"
-              >
+              <div class="q-mb-md" v-for="m in messageItems" :key="m.id">
                 <q-chat-message
-                  :name="message.profile.user.username"
-                  :text="[message.content]"
-                  :stamp="moment(message.created_at).format('LLLL')"
-                  :sent="message.profile.id === loggedUserId"
+                  :name="m.profile.user.username"
+                  :text="[m.content]"
+                  :stamp="moment(m.created_at).format('LLLL')"
+                  :sent="m.profile.id === loggedUserId"
                   :text-color="
-                    message.profile.id === loggedUserId ? 'black' : 'white'
+                    m.profile.id === loggedUserId ? 'black' : 'white'
                   "
                   :bg-color="
-                    message.profile.id === loggedUserId ? 'green' : 'primary' //amber-7
+                    m.profile.id === loggedUserId ? 'green' : 'primary' //amber-7
                   "
                 />
               </div>

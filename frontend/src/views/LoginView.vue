@@ -21,11 +21,21 @@ const submit = async () => {
   }).then(
     () => {
       AxiosService.updateCsrfToken();
-      localStorage.setItem("user", username.value);
-      router.push({
-        path: "/",
-        params: { alert: "Logged in as " + username.value },
-      });
+
+      AxiosService.GET(`${API_URL}profile-items/logged-user-id/`).then(
+        (response) => {
+          let userID = response.data;
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ name: username.value, id: userID })
+          );
+
+          router.push({
+            path: "/",
+            params: { alert: "Logged in as " + username.value },
+          });
+        }
+      );
     },
     (error) => {
       errors.value = error.response.data;
