@@ -157,7 +157,7 @@ class ProfileItemViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    @action(detail=False, methods=["get"], url_path="authenticated")
+    @action(detail=False, methods=["GET"], url_path="authenticated")
     def isAuthenticated(self, request):
         return Response(data="Test", status=status.HTTP_200_OK)
 
