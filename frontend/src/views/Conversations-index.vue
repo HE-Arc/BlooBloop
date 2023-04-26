@@ -42,7 +42,8 @@ const fetchMessages = async (id) => {
 };
 
 const startWebSocket = async (id) => {
-  webSocket = new WebSocket("ws://" + WS_HOST + "/ws/chat/" + id + "/");
+  console.log("Hello there");
+  webSocket = new WebSocket("wss://" + WS_HOST + "/ws/chat/" + id + "/");
 
   // receive message
   webSocket.onmessage = () => {
