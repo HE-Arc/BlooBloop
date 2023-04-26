@@ -22,31 +22,35 @@ const isValidEmail = (val) => {
 const submit = async () => {
   errors.value = null;
 
-  await AxiosService.POST(`${API_URL}profile-items/`, {
-    user: {
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    },
+  await AxiosService.POST(`${API_URL}profile-items/register/`, {
+    username: username.value,
+    email: email.value,
+    password: password.value,
   })
     .then(async () => {
       await AxiosService.POST(`${API_URL}profile-items/login/`, {
         username: username.value,
         password: password.value,
       }).then(() => {
+        AxiosService.updateCsrfToken();
+        localStorage.setItem("user", username.value);
         router.push({
           path: "/",
         });
       });
     })
     .catch((error) => {
-      errors.value = error + ": register failed.";
+      errors.value = error.response.data.error;
     });
 };
 </script>
 
 <template>
-  {{ errors }}
+  <div class="q-mx-lg">
+    <q-banner v-if="errors" dense inline-actions class="text-white bg-red">
+      {{ errors }}
+    </q-banner>
+  </div>
 
   <main>
     <div class="q-mx-auto q-mt-xl" style="max-width: 50%">

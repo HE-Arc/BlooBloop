@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate, get_user, login, logout
+from django.contrib.auth.hashers import make_password
 
 from .models import ConversationItem, MessageItem, ProfileItem
 from .serializers import (
@@ -15,6 +16,7 @@ from .serializers import (
     ProfileItemSerializer,
     UserSerializer,
 )
+
 
 class ConversationItemViewSet(viewsets.ModelViewSet):
     queryset = ConversationItem.objects.all()
@@ -42,16 +44,16 @@ class ConversationItemViewSet(viewsets.ModelViewSet):
             new_conversation.users.add(profile)
 
         return Response()
-    
+
     def partial_update(self, request, *args, **kwargs):
         print("ID:", request.data)
-        instance = get_object_or_404(ConversationItem, id=request.data['id'])
-        instance.name = request.data['name']
-        
+        instance = get_object_or_404(ConversationItem, id=request.data["id"])
+        instance.name = request.data["name"]
+
         instance.users.clear()
         for profile in request.data["users"]:
-            instance.users.add(profile['id'])       
-            
+            instance.users.add(profile["id"])
+
         instance.save()
         return Response()
 
@@ -64,6 +66,7 @@ class ConversationItemViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(profile_conversations, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 class MessageItemViewSet(viewsets.ModelViewSet):
     queryset = MessageItem.objects.all()
@@ -110,6 +113,32 @@ class MessageItemViewSet(viewsets.ModelViewSet):
 class ProfileItemViewSet(viewsets.ModelViewSet):
     queryset = ProfileItem.objects.all()
     serializer_class = ProfileItemSerializer
+
+    @action(detail=False, methods=["post"])
+    def register(self, request):
+        username = request.data["username"].strip()
+        email = request.data["email"].strip()
+        password = request.data["password"].strip()
+
+        existingUsers = User.objects.all().filter(username=username)
+
+        if len(existingUsers) > 0:
+            return Response(
+                {"error": "An user already exists with this username"},
+                status=status.HTTP_409_CONFLICT,
+            )
+
+        user = User()
+        user.username = username
+        user.email = email
+        user.password = make_password(password=password)
+        user.save()
+
+        profile = ProfileItem()
+        profile.user = user
+        profile.save()
+
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=["post"])
     def login(self, request):

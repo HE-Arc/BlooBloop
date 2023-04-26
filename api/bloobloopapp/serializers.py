@@ -32,12 +32,6 @@ class ProfileItemSerializer(serializers.HyperlinkedModelSerializer):
             "messages",
         ]
 
-    def create(self, validated_data):
-        user_data = validated_data.pop("user")
-        user = User.objects.create_user(**user_data)
-        profile = ProfileItem.objects.create(user=user, **validated_data)
-        return profile
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                    CONVERSATION Serializer                    #
