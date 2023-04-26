@@ -47,6 +47,8 @@ const startWebSocket = async (id) => {
   // receive message
   webSocket.onmessage = () => {
     fetchMessages(id);
+
+    new Audio("/tunes/BlooBloop.mp3").play();
   };
 };
 
@@ -75,7 +77,7 @@ const submitMessage = async (index) => {
 
   if (result.status == 201) {
     message.value = "";
-    new Audio("/tunes/send.mp3").play();
+    new Audio("/tunes/BlooBloop.mp3").play();
 
     router.push({
       path: "/conversations",
