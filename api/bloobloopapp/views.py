@@ -159,8 +159,6 @@ class ProfileItemViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["GET"], url_path="authenticated")
     def isAuthenticated(self, request):
-        return Response(data="Test", status=status.HTTP_200_OK)
-
         if request.user.is_authenticated:
             return Response(True, status=status.HTTP_200_OK)
         else:
