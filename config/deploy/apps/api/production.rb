@@ -36,3 +36,14 @@ namespace :gunicorn do
         end
     end
 end
+
+after 'gunicorn:restart', 'gunicorn:websocket'
+
+namespace :gunicorn do
+    desc 'Launch asgi server for websocket'
+    task :websocket do
+        on roles(:web) do |h|
+            execute :sudo, 'systemctl restart daphne.service'
+        end
+    end
+end
