@@ -36,3 +36,15 @@ namespace :gunicorn do
         end
     end
 end
+
+after 'gunicorn:restart', 'gunicorn:websocket'
+
+namespace :gunicorn do
+    desc 'Launch asgi server for websocket'
+    task :websocket do
+        on roles(:web) do |h|
+            execute "cd #{release_path}; daphne -b :: -p 5000 bloobloop.asgi:applicati
+            on"
+        end
+    end
+end
