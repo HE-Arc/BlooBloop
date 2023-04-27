@@ -7,11 +7,11 @@ import moment from "moment";
 import "@/assets/shake.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const WS_HOST = import.meta.env.VITE_WEBSOCKET_HOST;
+//const WS_HOST = import.meta.env.VITE_WEBSOCKET_HOST;
 
 const route = useRoute();
 const router = useRouter();
-const errors = ref(null);
+//const errors = ref(null);
 
 const loggedUserId = ref(-1);
 const message = ref("");
@@ -42,8 +42,11 @@ const fetchMessages = async (id) => {
 };
 
 const startWebSocket = async (id) => {
-  console.log("Hello there");
-  webSocket = new WebSocket("wss://" + WS_HOST + "/ws/chat/" + id + "/");
+  var ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+
+  webSocket = new WebSocket(
+    ws_scheme + "://" + window.location.host + "/ws/chat/" + id + "/"
+  );
 
   // receive message
   webSocket.onmessage = () => {
