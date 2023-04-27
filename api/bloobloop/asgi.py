@@ -14,11 +14,11 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 import bloobloop.routing
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bloobloop.settings")
 
 application = ProtocolTypeRouter(
     {
-        "http": get_asgi_application(),
+        "https": get_asgi_application(),
         "websocket": AllowedHostsOriginValidator(
             AuthMiddlewareStack(URLRouter(bloobloop.routing.websocket_urlpatterns))
         ),
