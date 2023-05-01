@@ -38,14 +38,18 @@ const submit = async () => {
       );
     },
     (error) => {
-      errors.value = error.response.data;
+      errors.value = error.response.data.error;
     }
   );
 };
 </script>
 
 <template>
-  {{ errors }}
+  <div class="q-mx-lg">
+    <q-banner v-if="errors" dense inline-actions class="text-white bg-red">
+      {{ errors }}
+    </q-banner>
+  </div>
 
   <main>
     <div class="q-mx-auto q-mt-xl" style="max-width: 50%">

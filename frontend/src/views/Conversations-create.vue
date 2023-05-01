@@ -30,7 +30,7 @@ const submit = async () => {
       });
     });
   } catch (error) {
-    errors.value = error.response.data;
+    errors.value = error.response.data.error;
   }
 };
 
@@ -50,6 +50,12 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="q-mx-lg">
+    <q-banner v-if="errors" dense inline-actions class="text-white bg-red">
+      {{ errors }}
+    </q-banner>
+  </div>
+
   <main>
     <div class="q-mx-auto" style="max-width: 50%">
       <h3>New Conversation</h3>
