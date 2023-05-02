@@ -124,11 +124,9 @@ onMounted(async () => {
     fetchConversationItems();
   }
 
-  // ! TODO : FIX not closing web socket when leaving conversation page because doesn't pass by the listener
   watch(
     () => route.path,
     () => {
-      console.log("ON QUITTE LES CONV !!!");
       closeWebSocket();
     }
   );

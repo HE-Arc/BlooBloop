@@ -14,7 +14,6 @@ from .serializers import (
     ConversationItemSerializer,
     MessageItemSerializer,
     ProfileItemSerializer,
-    UserSerializer,
 )
 
 
@@ -74,17 +73,6 @@ class MessageItemViewSet(viewsets.ModelViewSet):
 
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-
-    #! TODO:FIX - The following method hasn't been tested - Doesn't work, but is it really necessary ?
-    @action(detail=False, methods=["GET"], url_path="recent-messages")
-    def recent_messages(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        recent_messages = MessageItem.objects.filter(user=user).order_by("created_at")
-        serializer = self.get_serializer(recent_messages)
-        if serializer.is_valid():
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["post"], url_path="custom-post")
     def custom_message_create(self, request):

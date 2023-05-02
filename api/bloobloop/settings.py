@@ -24,10 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-v5la0j(qt2_ab4)+nquraj-_5=vyth*q$s*0#$rs520by7&yxv"
 
@@ -97,7 +93,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bloobloop.wsgi.application"
 
-ASGI_APPLICATION = "bloobloop.asgi.application"  # routing.py will be created later
+ASGI_APPLICATION = "bloobloop.asgi.application"
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 

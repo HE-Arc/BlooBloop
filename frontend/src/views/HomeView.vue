@@ -5,7 +5,6 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const alert = ref("");
 
-// TODO: Find out how to pass parameters between the routes
 onMounted(() => {
   if (router.params) {
     alert.value = router.params.alert;
