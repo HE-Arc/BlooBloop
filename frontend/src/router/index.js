@@ -39,7 +39,7 @@ const router = createRouter({
     {
       path: "/register",
       name: "register",
-      component: () => import("../views/Register.vue"),
+      component: () => import("../views/RegisterView.vue"),
     },
     {
       path: "/login",
@@ -50,18 +50,20 @@ const router = createRouter({
     {
       path: "/conversations",
       name: "conversations.index",
-      component: () => import("../views/Conversations-index.vue"),
+      component: () => import("../views/conversations/ConversationsView.vue"),
       beforeEnter: authenticationGuard,
     },
     {
       path: "/conversations/create",
       name: "conversations.create",
-      component: () => import("../views/Conversations-create.vue"),
+      component: () =>
+        import("../views/conversations/CreateConversationsView.vue"),
       beforeEnter: authenticationGuard,
     },
     {
       path: "/conversations/:id",
-      component: () => import("../views/Conversations-update.vue"),
+      component: () =>
+        import("../views/conversations/UpdateConversationsView.vue"),
       beforeEnter: authenticationGuard,
     },
   ],

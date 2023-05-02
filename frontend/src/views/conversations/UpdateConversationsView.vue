@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import AxiosService from "../../utils/AxiosService.mjs";
+import AxiosService from "../../../utils/AxiosService.mjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const route = useRoute();

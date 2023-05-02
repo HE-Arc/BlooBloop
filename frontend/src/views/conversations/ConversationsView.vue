@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import AxiosService from "../../utils/AxiosService.mjs";
+import AxiosService from "../../../utils/AxiosService.mjs";
 import moment from "moment";
 
 import "@/assets/shake.css";
